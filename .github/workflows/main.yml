@@ -30,4 +30,4 @@ jobs:
         poetry install
         poetry run pytest
         pip install git+https://github.com/goatwu1993/pycobertura.git@feat/github-format
-        pycobertura show -f github coverage.xml
+        pycobertura show -f github-annotation coverage.xml
