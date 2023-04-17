@@ -1,0 +1,7 @@
+[run]
+include= pycobertura_test/*.py
+omit =
+    */migrations/*
+
+[report]
+fail_under=70
