@@ -52,8 +52,8 @@ jobs:
       run: |
         pip install git+https://github.com/goatwu1993/pycobertura.git@feat/diff-github-annotation-format
         pycobertura diff \
-          --source1 base_ref/ \
-          --source2 . \
-          base_ref/coverage.xml \
+          --source1 . \
+          --source2 base_ref/ \
           coverage.xml \
+          base_ref/coverage.xml \
           --format=github-annotation
