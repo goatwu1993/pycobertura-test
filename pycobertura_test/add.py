@@ -8,3 +8,6 @@ def badNameing():
 
 def not_covered_function_in_main_branch():
     return
+
+def not_covered_function_in_feature_branch():
+    return
