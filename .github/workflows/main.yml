@@ -35,9 +35,25 @@ jobs:
       with:
         name: coverage-${{ github.sha }}
         path: coverage.xml
-    #- name: Run Tests
-    #  run: |
-    #    poetry install
-    #    poetry run pytest
-    #    pip install git+https://github.com/goatwu1993/pycobertura.git@feat/github-format
-    #    pycobertura show -f github coverage.xml
+    - name: checkout-base-ref-source-code
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.base.sha }}
+        path: base_ref
+    - name: checkout-base-ref-coverage
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        name: coverage-${{ github.event.pull_request.base.sha }}
+        path: base_ref
+    - name: pycobertura
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        pip install git+https://github.com/goatwu1993/pycobertura.git@feat/diff-github-annotation-format
+        pycobertura diff \
+          --source1 base_ref/ \
+          --source2 . \
+          base_ref/coverage.xml \
+          coverage.xml \
+          --format=github-annotation
