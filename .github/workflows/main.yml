@@ -43,10 +43,25 @@ jobs:
         path: base_ref
     - name: checkout-base-ref-coverage
       if: ${{ github.event_name == 'pull_request' }}
-      uses: dawidd6/action-download-artifact@v2
-      with:
-        name: coverage-${{ github.event.pull_request.base.sha }}
-        path: base_ref
+      run: |
+          set -x
+          ARCHIVE_DOWNLOAD_URL=$(curl \
+            -f \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            ${{ github.api_url }}/repos/${{ github.repository }}/actions/artifacts\?name\=coverage-${{ github.event.pull_request.base.sha }} | jq -r '.artifacts[0].archive_download_url')
+          echo "${ARCHIVE_DOWNLOAD_URL}"
+          # Follow the location and redirect
+          curl -L \
+            -f \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "${ARCHIVE_DOWNLOAD_URL}" \
+            --output coverage-base-ref.zip && \
+          unzip coverage-base-ref.zip -d base_ref && \
+          rm coverage-base-ref.zip
     - name: pycobertura
       if: ${{ github.event_name == 'pull_request' }}
       run: |
