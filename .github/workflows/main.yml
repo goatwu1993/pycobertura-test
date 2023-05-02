@@ -5,6 +5,7 @@ on:
     branches: 
       - main
       - show-pipeline-base
+      - diff-pipeline-base
   pull_request:
 
 jobs:
