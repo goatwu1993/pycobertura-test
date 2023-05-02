@@ -65,7 +65,7 @@ jobs:
     - name: pycobertura
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        pip install git+https://github.com/goatwu1993/pycobertura.git@feat/diff-github-annotation-format
+        pip install git+https://github.com/goatwu1993/pycobertura.git@dev
         pycobertura diff \
           --source1 base_ref/ \
           --source2 . \
