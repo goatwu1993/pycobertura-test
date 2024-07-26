@@ -28,6 +28,7 @@ jobs:
         run: python -m pip install --upgrade poetry
       - name: Run Tests
         run: |
+          cd myapp
           poetry install
           poetry run pytest
       - name: pycobertura
