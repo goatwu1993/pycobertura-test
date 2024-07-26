@@ -2,7 +2,7 @@ name: main
 
 on:
   push:
-    branches: 
+    branches:
       - main
       - show-pipeline-base
   pull_request:
@@ -14,37 +14,37 @@ jobs:
     strategy:
       matrix:
         include:
-          - python-version: '3.8'
+          - python-version: "3.8"
           #- python-version: '3.9'
           #- python-version: '3.10'
           #- python-version: '3.11'
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: python -m pip install --upgrade poetry
-    - name: Run Tests
-      run: |
-        poetry install
-        poetry run pytest
-    - name: upload-artifact
-      if: ${{ github.event_name == 'push' }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage-${{ github.sha }}
-        path: coverage.xml
-    - name: checkout-base-ref-source-code
-      if: ${{ github.event_name == 'pull_request' }}
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.pull_request.base.sha }}
-        path: base_ref
-    - name: checkout-base-ref-coverage
-      if: ${{ github.event_name == 'pull_request' }}
-      run: |
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: python -m pip install --upgrade poetry
+      - name: Run Tests
+        run: |
+          poetry install
+          poetry run pytest
+      - name: upload-artifact
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ github.sha }}
+          path: coverage.xml
+      - name: checkout-base-ref-source-code
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base_ref
+      - name: checkout-base-ref-coverage
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
           set -x
           ARCHIVE_DOWNLOAD_URL=$(curl \
             -f \
@@ -63,8 +63,8 @@ jobs:
             --output coverage-base-ref.zip && \
           unzip coverage-base-ref.zip -d base_ref && \
           rm coverage-base-ref.zip
-    - name: pycobertura
-      if: ${{ github.event_name == 'pull_request' }}
-      run: |
-        pip install pycobertura 
-        pycobertura show coverage.xml --format=github-annotation
+      - name: pycobertura
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          pip install pycobertura
+          pycobertura show coverage.xml --format=github-annotation
